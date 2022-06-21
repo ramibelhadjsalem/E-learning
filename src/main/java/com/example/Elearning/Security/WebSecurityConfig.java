@@ -1,9 +1,9 @@
 package com.example.Elearning.Security;
 
 
-import com.example.Elearning.Security.services.UserDetailServiceImpl;
-import com.example.Elearning.Security.services.jwt.AuthEntryPointJwt;
-import com.example.Elearning.Security.services.jwt.AuthTokenFilter;
+import com.example.Elearning.Security.serviceUser.UserDetailServiceImpl;
+import com.example.Elearning.Security.serviceUser.jwt.AuthEntryPointJwt;
+import com.example.Elearning.Security.serviceUser.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

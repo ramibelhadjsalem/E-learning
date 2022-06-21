@@ -1,4 +1,4 @@
-package com.example.Elearning.Security.services;
+package com.example.Elearning.Security.serviceUser;
 
 import com.example.Elearning.Models.User;
 import com.example.Elearning.Repositorys.UserRepository;

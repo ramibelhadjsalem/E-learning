@@ -1,7 +1,7 @@
-package com.example.Elearning.Security.services.jwt;
+package com.example.Elearning.Security.serviceUser.jwt;
 
 
-import com.example.Elearning.Security.services.UserDetailsImpl;
+import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

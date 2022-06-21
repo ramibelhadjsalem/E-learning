@@ -1,4 +1,4 @@
-package com.example.Elearning.Security.services.jwt;
+package com.example.Elearning.Security.serviceUser.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
