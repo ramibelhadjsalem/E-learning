@@ -16,14 +16,14 @@ public class ELearningApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ELearningApplication.class, args);
 	}
-	/*@Bean
+	@Bean
 	CommandLineRunner run(){
 		return args -> {
 			roleRpository.save(new Role(null,ERole.ROLE_ADMIN));
 			roleRpository.save(new Role(null,ERole.ROLE_USER));
-			roleRpository.save(new Role(null,ERole.ROLE_MODERATOR));
+			roleRpository.save(new Role(null,ERole.ROLE_PROF));
 
 		};
-	}*/
+	}
 
 }

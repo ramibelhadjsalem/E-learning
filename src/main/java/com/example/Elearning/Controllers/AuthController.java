@@ -1,7 +1,9 @@
 package com.example.Elearning.Controllers;
 
+import com.example.Elearning.DTOs.Request.SignUpDto;
 import com.example.Elearning.DTOs.Request.LoginForm;
-import com.example.Elearning.DTOs.Request.SignupRequest;
+
+import com.example.Elearning.DTOs.Response.JwtRefreshResponse;
 import com.example.Elearning.DTOs.Response.JwtResponse;
 import com.example.Elearning.DTOs.Response.MessageResponse;
 import com.example.Elearning.Models.ERole;
@@ -11,7 +13,10 @@ import com.example.Elearning.Repositorys.RoleRpository;
 import com.example.Elearning.Repositorys.UserRepository;
 import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import com.example.Elearning.Security.serviceUser.jwt.JwtUtils;
+import com.example.Elearning.Services.RoleService;
+import com.example.Elearning.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,9 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -31,17 +35,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthController {
   @Autowired
+  UserService userService;
+  @Autowired
+  RoleService roleService;
+  @Autowired
   AuthenticationManager authenticationManager;
-
-  @Autowired
-  UserRepository userRepository;
-
-  @Autowired
-  RoleRpository roleRpository ;
-
   @Autowired
   PasswordEncoder encoder;
-
   @Autowired
   JwtUtils jwtUtils;
 
@@ -53,71 +53,80 @@ public class AuthController {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
-    
+    String refreshJwt = jwtUtils.generateRefreshJwtToken(authentication);
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     List<String> roles = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
         .collect(Collectors.toList());
 
-    return ResponseEntity.ok(new JwtResponse(jwt,
+    return ResponseEntity.ok(new JwtResponse(
+                         jwt,
+                         refreshJwt,
                          userDetails.getId(), 
                          userDetails.getUsername(), 
                          userDetails.getEmail(), 
                          roles));
   }
-
-  @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+  @PostMapping("/signup/user")
+  public ResponseEntity addUser(@Valid @RequestBody SignUpDto signUpDto){
+    if (userService.existsByUsername(signUpDto.getUsername())) {
       return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Username is already taken!"));
+              .badRequest()
+              .body(new MessageResponse("Error: Username is already taken!"));
     }
+    User user = new User(signUpDto.getUsername(),
+            signUpDto.getEmail(),
+            encoder.encode(signUpDto.getPassword()));
 
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+   /* Role userRole = roleRpository.findByName(ERole.ROLE_USER)
+            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));*/
+    Role userRole = roleService.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+    user.getRoles().add(userRole);
+    userService.saveUser(user);
+    return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.CREATED);
+  }
+
+  @PostMapping("/signup/admin")
+
+  public ResponseEntity addAdmin(@Valid @RequestBody SignUpDto signUpDto){
+    if (userService.existsByUsername(signUpDto.getUsername())) {
       return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Email is already in use!"));
+              .badRequest()
+              .body(new MessageResponse("Error: Username is already taken!"));
     }
+    User user = new User(signUpDto.getUsername(),
+            signUpDto.getEmail(),
+            encoder.encode(signUpDto.getPassword()));
 
-    // Create new user's account
-    User user = new User(signUpRequest.getUsername(),
-               signUpRequest.getEmail(),
-               encoder.encode(signUpRequest.getPassword()));
+    Role userRole =roleService.findByName(ERole.ROLE_ADMIN)
+            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+    user.getRoles().add(userRole);
+    userService.saveUser(user);
+    return new ResponseEntity<>(new MessageResponse("Admin registered successfully!"), HttpStatus.CREATED);
+  }
 
-    Set<String> strRoles = signUpRequest.getRole();
-    Set<Role> roles = new HashSet<>();
+  @PostMapping("/signup/prof")
 
-    if (strRoles.isEmpty()) {
-      Role userRole = roleRpository.findByName(ERole.ROLE_ADMIN)
-          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-      roles.add(userRole);
-    } else {
-      strRoles.forEach(role -> {
-        switch (role) {
-        case "admin":
-          Role adminRole = roleRpository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error:admin Role is not found."));
-          roles.add(adminRole);
-
-          break;
-        case "mod":
-          Role modRole = roleRpository.findByName(ERole.ROLE_MODERATOR)
-              .orElseThrow(() -> new RuntimeException("Error:moderator Role is not found."));
-          roles.add(modRole);
-
-          break;
-        default:
-          Role userRole = roleRpository.findByName(ERole.ROLE_USER)
-              .orElseThrow(() -> new RuntimeException("Error:user Role is not found."));
-          roles.add(userRole);
-        }
-      });
+  public ResponseEntity addProf(@Valid @RequestBody SignUpDto signUpDto){
+    if (userService.existsByUsername(signUpDto.getUsername())) {
+      return ResponseEntity
+              .badRequest()
+              .body(new MessageResponse("Error: Username is already taken!"));
     }
+    User user = new User(signUpDto.getUsername(),
+            signUpDto.getEmail(),
+            encoder.encode(signUpDto.getPassword()));
 
-    user.setRoles(roles);
-    userRepository.save(user);
-
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    Role userRole = roleService.findByName(ERole.ROLE_PROF)
+            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+    user.getRoles().add(userRole);
+    userService.saveUser(user);
+    return new ResponseEntity<>(new MessageResponse("profisseur registered successfully!"), HttpStatus.CREATED);
+  }
+  @PostMapping("/refreshtoken") // Todo:RefreshToken
+  public ResponseEntity<?> refreshToken(@NotNull @RequestBody String refreshToken){
+    if(jwtUtils.validateJwtToken(refreshToken)==false) return new ResponseEntity<>(new MessageResponse("refreshToken not valid"),HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new JwtRefreshResponse("fezfzefzefe"),HttpStatus.UNAUTHORIZED);
   }
 }
