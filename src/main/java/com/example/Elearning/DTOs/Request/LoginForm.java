@@ -1,12 +1,13 @@
 package com.example.Elearning.DTOs.Request;
 
-import javax.validation.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Required;
 
+import javax.validation.constraints.NotBlank;
 public class LoginForm {
-    @NotBlank
+    @NotBlank(message = "username is required")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "password is required")
     private String password;
 
     public String getUsername() {
@@ -23,5 +24,10 @@ public class LoginForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LoginForm() {
+        this.username="";
+        this.password="";
     }
 }
