@@ -1,6 +1,6 @@
 package com.example.Elearning.Security.serviceUser;
 
-import com.example.Elearning.Models.User;
+import com.example.Elearning.Models.UserModel.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

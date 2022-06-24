@@ -6,15 +6,15 @@ import com.example.Elearning.DTOs.Request.LoginForm;
 import com.example.Elearning.DTOs.Response.JwtRefreshResponse;
 import com.example.Elearning.DTOs.Response.JwtResponse;
 import com.example.Elearning.DTOs.Response.MessageResponse;
-import com.example.Elearning.Models.ERole;
-import com.example.Elearning.Models.Role;
-import com.example.Elearning.Models.User;
-import com.example.Elearning.Repositorys.RoleRpository;
-import com.example.Elearning.Repositorys.UserRepository;
+import com.example.Elearning.Models.LevelModel.Level;
+import com.example.Elearning.Models.UserModel.ERole;
+import com.example.Elearning.Models.UserModel.Role;
+import com.example.Elearning.Models.UserModel.User;
 import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import com.example.Elearning.Security.serviceUser.jwt.JwtUtils;
-import com.example.Elearning.Services.RoleService;
-import com.example.Elearning.Services.UserService;
+import com.example.Elearning.Services.LevelServices.LevelService;
+import com.example.Elearning.Services.Userservices.RoleService;
+import com.example.Elearning.Services.Userservices.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +38,8 @@ public class AuthController {
   UserService userService;
   @Autowired
   RoleService roleService;
+  @Autowired
+  LevelService levelService;
   @Autowired
   AuthenticationManager authenticationManager;
   @Autowired
@@ -78,11 +80,13 @@ public class AuthController {
             signUpDto.getEmail(),
             encoder.encode(signUpDto.getPassword()));
 
-   /* Role userRole = roleRpository.findByName(ERole.ROLE_USER)
-            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));*/
     Role userRole = roleService.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
     user.getRoles().add(userRole);
+    if(signUpDto.getLevel()!=null){
+        Level level=levelService.findbyName(signUpDto.getLevel());
+        user.setLevel(level);
+    }
     userService.saveUser(user);
     return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.CREATED);
   }

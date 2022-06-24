@@ -1,7 +1,7 @@
 package com.example.Elearning.Repositorys;
 
-import com.example.Elearning.Models.ERole;
-import com.example.Elearning.Models.Role;
+import com.example.Elearning.Models.UserModel.ERole;
+import com.example.Elearning.Models.UserModel.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

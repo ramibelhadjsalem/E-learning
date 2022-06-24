@@ -1,7 +1,7 @@
-package com.example.Elearning.Services;
+package com.example.Elearning.Services.Userservices;
 
-import com.example.Elearning.Models.ERole;
-import com.example.Elearning.Models.Role;
+import com.example.Elearning.Models.UserModel.ERole;
+import com.example.Elearning.Models.UserModel.Role;
 import com.example.Elearning.Repositorys.RoleRpository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.example.Elearning.Repositorys;
 
-import com.example.Elearning.Models.User;
+import com.example.Elearning.Models.UserModel.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

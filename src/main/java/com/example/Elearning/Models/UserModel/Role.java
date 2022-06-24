@@ -1,4 +1,6 @@
-package com.example.Elearning.Models;
+package com.example.Elearning.Models.UserModel;
+
+import com.example.Elearning.Models.UserModel.ERole;
 
 import javax.persistence.*;
 

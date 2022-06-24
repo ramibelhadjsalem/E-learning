@@ -1,9 +1,15 @@
 package com.example.Elearning.DTOs.Request;
 
+import com.example.Elearning.Models.LevelModel.Level;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class SignUpDto {
+
     @NotBlank
     private String username ;
     @NotBlank
@@ -11,6 +17,18 @@ public class SignUpDto {
     @NotBlank
     @Email
     private  String email;
+
+
+
+    private String level ;
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
 
     public String getEmail() {
         return email;

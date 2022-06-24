@@ -1,4 +1,7 @@
-package com.example.Elearning.Models;
+package com.example.Elearning.Models.UserModel;
+
+import com.example.Elearning.Models.LevelModel.Level;
+import com.example.Elearning.Models.UserModel.Role;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +15,6 @@ import java.util.Set;
         }
     )
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,6 +25,10 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "level_id", referencedColumnName = "id")
+    private Level level;
     public User() {
     }
 
@@ -33,6 +39,14 @@ public class User {
         this.password = password;
 
     }
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
 
     public Long getId() {
         return id;
