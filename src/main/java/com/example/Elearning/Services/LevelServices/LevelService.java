@@ -4,6 +4,7 @@ import com.example.Elearning.Models.LevelModel.Level;
 import com.example.Elearning.Repositorys.LevelRepo.LevelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,12 @@ public class LevelService {
         return levelRepository.save(level);
     }
     public Level getByid(Long id){
+
+        try {
         return levelRepository.findById(id).get();
+        }catch (Exception ex){
+            throw new NotFoundException("Level with id :"+id+" Not found");
+        }
     }
     public void deleteById(Long id){
         levelRepository.deleteById(id);

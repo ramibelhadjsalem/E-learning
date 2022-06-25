@@ -1,18 +1,14 @@
-package com.example.Elearning.Models.SectionModels;
+package com.example.Elearning.Models.ChapitresModels;
 
 import com.example.Elearning.DTOs.Views.View;
+import com.example.Elearning.Models.Subjects.Subject;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-
 
 @Entity
-@Table(name = "sections",
-        uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
-        })
-public class Section {
+@Table(name = "Chapitres")
+public class Chapitre {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(View.base.class)
@@ -20,12 +16,17 @@ public class Section {
     @JsonView(View.base.class)
     private String name ;
 
-    public Section() {
-    }
+    @ManyToOne
+    @JsonView(View.base.class)
+    private Subject subject;
 
-    public Section(Long id, String name) {
+    public Chapitre(Long id, String name, Subject subject) {
         this.id = id;
         this.name = name;
+        this.subject = subject;
+    }
+
+    public Chapitre() {
     }
 
     public Long getId() {
@@ -42,5 +43,13 @@ public class Section {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 }

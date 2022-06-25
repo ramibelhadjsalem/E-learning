@@ -1,11 +1,12 @@
 package com.example.Elearning.Models.Subjects;
 
+import com.example.Elearning.DTOs.Views.View;
 import com.example.Elearning.Models.LevelModel.Level;
 import com.example.Elearning.Models.SectionModels.Section;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,14 +15,17 @@ import java.util.Set;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(View.base.class)
     private Long id ;
+    @JsonView(View.base.class)
     private String name ;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY ,cascade=CascadeType.ALL )
+    @ManyToOne(fetch = FetchType.LAZY ,cascade=CascadeType.DETACH )
     @JoinColumn(name = "level_id")
     private Level level;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @JsonView(View.showSection.class)
     public Set<Section> sections=new HashSet<>();
 
     public Subject() {}

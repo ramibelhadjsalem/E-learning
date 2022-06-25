@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,7 @@ public class SubjectController {
         return new ResponseEntity<>(subject,HttpStatus.OK);
     }
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> addSubject(@Valid @RequestBody SubjectDTO subjectDTO){
         Subject subject=modelMapper.map(subjectDTO,Subject.class);
         Level level = levelService.findbyName(subjectDTO.getLevelname());
@@ -69,6 +71,7 @@ public class SubjectController {
         return new ResponseEntity<>(subject1,HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity deleteByid(@PathVariable Long id){
         subjectService.deleteByid(id);
         return new ResponseEntity<>(new MessageResponse("subject deleted "),HttpStatus.OK);

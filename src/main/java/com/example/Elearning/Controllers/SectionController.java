@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class SectionController {
         return new ResponseEntity<>(sectionService.findById(id), HttpStatus.OK);
     }
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> addSection(@Valid @RequestBody SectionDto sectionDto){
 
         Section section = modelMapper.map(sectionDto,Section.class);
@@ -40,6 +42,7 @@ public class SectionController {
         return new ResponseEntity<>(sectionService.save(section),HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteById(@PathVariable Long id){
 
         sectionService.deleteByid(id);

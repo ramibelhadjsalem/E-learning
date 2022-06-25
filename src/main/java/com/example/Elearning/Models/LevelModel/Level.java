@@ -1,6 +1,8 @@
 package com.example.Elearning.Models.LevelModel;
 
 import com.example.Elearning.Models.Subjects.Subject;
+import com.example.Elearning.Models.UserModel.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,9 +15,8 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private  Long id ;
     private  String name ;
-    @OneToMany(fetch = FetchType.EAGER ,cascade=CascadeType.ALL )
+    @OneToMany(fetch = FetchType.EAGER ,cascade=CascadeType.REMOVE )
     private Set<Subject> subjects = new HashSet<>();
-
 
     public Level(Long id, String name) {
         this.id = id;
