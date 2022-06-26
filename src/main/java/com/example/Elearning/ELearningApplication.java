@@ -24,6 +24,16 @@ public class ELearningApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ELearningApplication.class, args);
 	}
+	@Bean
+	CommandLineRunner run(RoleRpository roleRpository){
+		return args -> {
+			if (roleRpository.count()<1) {
+				roleRpository.save(new Role(null,ERole.ROLE_ADMIN));
+				roleRpository.save(new Role(null,ERole.ROLE_PROF));
+				roleRpository.save(new Role(null,ERole.ROLE_USER));
+			}
+		};
+	}
 
 
 

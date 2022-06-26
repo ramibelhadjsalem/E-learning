@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PageService {
@@ -22,7 +23,7 @@ public class PageService {
         try {
             return pageRepository.findById(id).get();
         }catch (Exception ex){
-            throw new NotFoundException("page with id : "+id+" Not found");
+            throw new NoSuchElementException("page with id : "+id+" Not found");
         }
 
     }
@@ -30,7 +31,7 @@ public class PageService {
         try {
             return pageRepository.findByName(name).get();
         }catch (Exception ex){
-            throw new NotFoundException("page with name : "+name+" Not found");
+            throw new NoSuchElementException("page with name : "+name+" Not found");
         }
 
     }

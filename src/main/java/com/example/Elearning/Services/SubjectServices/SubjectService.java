@@ -4,6 +4,7 @@ import com.example.Elearning.Models.Subjects.Subject;
 import com.example.Elearning.Repositorys.SubjectRepo.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -25,7 +26,11 @@ public class SubjectService {
         return subjectRepository.save(subject);
     }
     public void deleteByid(Long id ){
-        subjectRepository.deleteById(id);
+        try {
+            subjectRepository.deleteById(id);
+        }catch (Exception ex){
+            throw new NotFoundException("Not found Subject with id :"+id);
+        }
     }
     public Subject findByName(String name){
         return subjectRepository.findByName(name).get();

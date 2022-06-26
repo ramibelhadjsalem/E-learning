@@ -32,7 +32,12 @@ public class LevelService {
         }
     }
     public void deleteById(Long id){
-        levelRepository.deleteById(id);
+        try {
+            levelRepository.deleteById(id);
+        }catch (Exception ex){
+            throw new NotFoundException("Level with id :"+id+" Not found");
+        }
+
     }
     public boolean existbyName(String name){
         return levelRepository.existsByName(name);

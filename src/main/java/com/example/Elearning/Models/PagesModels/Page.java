@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "pages")
@@ -20,11 +22,50 @@ public class Page {
 
     @JsonView(View.base.class)
     private Number pageNumber ;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name="chapitre_id")
+    @JsonView(View.page.class)
+    private Chapitre chapitre;
     public Page() {
     }
-    @ManyToOne
-    private Chapitre chapitre;
 
+    public Page(Long id, String name, Number pageNumber, Chapitre chapitre) {
+        this.id = id;
+        this.name = name;
+        this.pageNumber = pageNumber;
+        this.chapitre = chapitre;
+    }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Number getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(Number pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public Chapitre getChapitre() {
+        return chapitre;
+    }
+
+    public void setChapitre(Chapitre chapitre) {
+        this.chapitre = chapitre;
+    }
 }

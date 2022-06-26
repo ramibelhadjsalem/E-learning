@@ -4,6 +4,7 @@ import com.example.Elearning.Models.UserModel.User;
 import com.example.Elearning.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -20,6 +21,14 @@ public class UserService {
     }
     public List<User> findAll(){
        return userRepository.findAll();
+    }
+
+    public User findById(Long id_user) {
+        try {
+            return userRepository.findById(id_user).get();
+        }catch(Exception ex){
+            throw new NotFoundException("user with id :"+id_user+" not found");
+        }
     }
 
 }

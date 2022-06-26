@@ -55,7 +55,10 @@ public class ChapiterController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> DeleteById(@PathVariable Long id){
+
+
         chapitreService.deleteById(id);
+
         return new ResponseEntity<>(new MessageResponse("chapitre deleted "),HttpStatus.OK);
     }
 }

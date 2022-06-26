@@ -9,17 +9,15 @@ public class PageDTO {
     @NotBlank(message = "name page is required")
     @Size(min = 3,message = "min length is 3 character")
     private String name ;
-
-    @NotNull(message = "page number is required")
-    @Min(value = 1,message = "page number have to over 0")
-    private Number pageNumber ;
-
-    public PageDTO(String name, Number pageNumber) {
-        this.name = name;
-        this.pageNumber = pageNumber;
+    @NotNull(message = "chapitre id  is required")
+    private Long chapitre_id;
+    public PageDTO() {
     }
 
-    public PageDTO() {
+    public PageDTO(String name, Long chapitre_id) {
+        this.name = name;
+
+        this.chapitre_id = chapitre_id;
     }
 
     public String getName() {
@@ -30,11 +28,12 @@ public class PageDTO {
         this.name = name;
     }
 
-    public Number getPageNumber() {
-        return pageNumber;
+
+    public Long getChapitre_id() {
+        return chapitre_id;
     }
 
-    public void setPageNumber(Number pageNumber) {
-        this.pageNumber = pageNumber;
+    public void setChapitre_id(Long chapitre_id) {
+        this.chapitre_id = chapitre_id;
     }
 }
