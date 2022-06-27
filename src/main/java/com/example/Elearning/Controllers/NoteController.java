@@ -61,7 +61,6 @@ public class NoteController {
         Long idUser = tokenUtils.ExtractId();
         Page page = pageService.findById(noteDto.getId_page());
 
-
         Note note =new Note(null,noteDto.getMyNote(),"http://localhost:8080/api/note",page, tokenUtils.ExtractId());
 
 
