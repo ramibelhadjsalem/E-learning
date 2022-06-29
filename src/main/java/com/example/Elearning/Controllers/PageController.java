@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ public class PageController {
 
     @GetMapping
     @JsonView(View.page.class)
+
     public List<Page> findAll(){
         return pageService.findAll();
     }
@@ -47,6 +49,7 @@ public class PageController {
     }
     @PostMapping
     @JsonView(View.base.class)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> SavePage(@Valid @RequestBody PageDTO pageDTO){
         Page page= modelMapper.map(pageDTO ,Page.class);
         Chapitre chapitre = chapitreService.findById(pageDTO.getChapitre_id());
@@ -60,6 +63,7 @@ public class PageController {
         return new ResponseEntity<>(pageService.Save(page), HttpStatus.OK);
     }
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteById(@PathVariable Long id){
         Page page = pageService.findById(id);
         Chapitre chapitre = page.getChapitre();

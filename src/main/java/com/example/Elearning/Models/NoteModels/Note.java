@@ -17,11 +17,12 @@ public class Note {
     private String mynote;
     @JsonView(View.base.class)
     private String VocalUri;
+
     @JsonView(View.base.class)
     private Long user_id;
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "page_Id")
-    @JsonView(View.note.class)
+    @JsonView(View.base.class)
     private Page page;
 
 

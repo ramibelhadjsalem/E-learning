@@ -2,12 +2,12 @@ package com.example.Elearning.Models.PagesModels;
 
 import com.example.Elearning.DTOs.Views.View;
 import com.example.Elearning.Models.ChapitresModels.Chapitre;
+import com.example.Elearning.Models.FilesModules.File;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "pages")
@@ -27,6 +27,10 @@ public class Page {
     @JoinColumn(name="chapitre_id")
     @JsonView(View.page.class)
     private Chapitre chapitre;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private Collection<File> videos = new ArrayList<>();
+
     public Page() {
     }
 

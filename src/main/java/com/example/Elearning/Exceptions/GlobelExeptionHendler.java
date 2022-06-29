@@ -1,5 +1,6 @@
 package com.example.Elearning.Exceptions;
 
+import com.example.Elearning.Storage.exception.StorageFileNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,10 @@ public class GlobelExeptionHendler {
     public ResponseEntity<?> handleNotFoundException(EmptyResultDataAccessException ex, WebRequest request){
         ErrorDetails errorDetails=new ErrorDetails("Not found element to delete" , request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(StorageFileNotFoundException.class)
+    public ResponseEntity<Void> handleStorageFileNotFound(StorageFileNotFoundException e) {
+        return ResponseEntity.notFound().build();
     }
 
 

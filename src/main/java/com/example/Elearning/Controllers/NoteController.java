@@ -9,6 +9,7 @@ import com.example.Elearning.Models.UserModel.User;
 import com.example.Elearning.Services.NotesServices.NoteService;
 import com.example.Elearning.Services.PagesServices.PageService;
 import com.example.Elearning.Services.Userservices.UserService;
+import com.example.Elearning.Storage.StorageService;
 import com.example.Elearning.Utils.TokenUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.modelmapper.ModelMapper;
@@ -36,45 +37,46 @@ public class NoteController {
     PageService pageService;
     @Autowired
     TokenUtils tokenUtils;
+    @Autowired private StorageService storageService;
 
 
     public NoteController() {
     }
 
     @GetMapping
-    @PreAuthorize(" hasRole('ADMIN')")
-    @JsonView(View.note.class)
+    @JsonView(View.base.class)
     public List<Note> findAll(){
-        return noteService.findAll();
+        return noteService.findAll(tokenUtils.ExtractId());
     }
 
-    @GetMapping("/ouwn")
-    @PreAuthorize(" hasRole('ADMIN')")
-    @JsonView(View.note.class)
-    public List<Note> findAllByUser(){
-        return noteService.findAllByuser(tokenUtils.ExtractId());
+    @GetMapping("/page/{id}")
+    @JsonView(View.base.class)
+
+    public List<Note> findByPage(@PathVariable Long id_page){
+
+        return noteService.findbyPage(id_page,tokenUtils.ExtractId());
     }
 
     @PostMapping
-    @JsonView(View.note.class)
-    public ResponseEntity<?>  save(@Valid @RequestBody NoteDto noteDto , @RequestParam("file" )MultipartFile file){
-        Long idUser = tokenUtils.ExtractId();
-        Page page = pageService.findById(noteDto.getId_page());
+    @JsonView(View.base.class)
+    public ResponseEntity<?>  save(@RequestParam("page_id") Long page_id,
+            @RequestParam("mynote") String myNote,
+            @RequestParam("file" )MultipartFile file){
 
-        Note note =new Note(null,noteDto.getMyNote(),"http://localhost:8080/api/note",page, tokenUtils.ExtractId());
-
-
-
+        Note note =new Note(null,myNote,null,pageService.findById(page_id), tokenUtils.ExtractId());
+        if(!file.isEmpty()){
+            note.setVocalUri(storageService.store(file));
+        }
         return new ResponseEntity<>( noteService.Save(note), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @JsonView(View.note.class)
-    public ResponseEntity<Note> findByid(@PathVariable Long id){
+    @JsonView(View.base.class)
+    public ResponseEntity<Note> findByid(@PathVariable Long id){ //todo: verife this
         return new ResponseEntity<>(noteService.findbyId(id),HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+
     public ResponseEntity<?> deleteByid(@PathVariable Long id){
 
         Note note = noteService.findbyId(id);

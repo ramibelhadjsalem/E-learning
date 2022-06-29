@@ -18,8 +18,8 @@ public class NoteService {
     public NoteService() {
     }
 
-    public List<Note> findAll(){
-        return noteRepository.findAll();
+    public List<Note> findAll(Long id){
+        return noteRepository.findAllByUser_id(id);
     }
     public Note findbyId(Long id){
         try {
@@ -40,8 +40,8 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
-    public List<Note> findAllByuser(Long id){
-        return noteRepository.findAllByUser_id(id);
+    public List<Note> findbyPage(Long id_page,Long id_user){
+        return noteRepository.findAllByPage_idAndUser_id(id_page,id_user);
     }
 
 }

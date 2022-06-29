@@ -1,7 +1,9 @@
 package com.example.Elearning.Models.UserModel;
 
+import com.example.Elearning.DTOs.Views.View;
 import com.example.Elearning.Models.LevelModel.Level;
 import com.example.Elearning.Models.UserModel.Role;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -17,8 +19,9 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(View.base.class)
     private Long id;
-
+    @JsonView(View.base.class)
     private String username ;
     private String email ;
     private String password ;
