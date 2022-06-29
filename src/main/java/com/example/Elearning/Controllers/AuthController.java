@@ -1,5 +1,6 @@
 package com.example.Elearning.Controllers;
 
+import com.example.Elearning.DTOs.Request.RefreshTokenDto;
 import com.example.Elearning.DTOs.Request.SignUpDto;
 import com.example.Elearning.DTOs.Request.LoginForm;
 
@@ -10,12 +11,16 @@ import com.example.Elearning.Models.LevelModel.Level;
 import com.example.Elearning.Models.UserModel.ERole;
 import com.example.Elearning.Models.UserModel.Role;
 import com.example.Elearning.Models.UserModel.User;
+import com.example.Elearning.Security.serviceUser.UserDetailServiceImpl;
 import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import com.example.Elearning.Security.serviceUser.jwt.JwtUtils;
 import com.example.Elearning.Services.LevelServices.LevelService;
 import com.example.Elearning.Services.Userservices.RoleService;
 import com.example.Elearning.Services.Userservices.UserService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +52,12 @@ public class AuthController {
   PasswordEncoder encoder;
   @Autowired
   JwtUtils jwtUtils;
+  @Value("${jwtSecret}")
+  private String jwtSecret;
+
+  @Value("${jwtExpirationMs}")
+  private int jwtExpirationMs;
+  @Autowired private UserDetailServiceImpl userDetailService;
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginForm) {
@@ -129,8 +141,23 @@ public class AuthController {
     return new ResponseEntity<>(new MessageResponse("profisseur registered successfully!"), HttpStatus.CREATED);
   }
   @PostMapping("/refreshtoken") // Todo:RefreshToken
-  public ResponseEntity<?> refreshToken(@NotNull @RequestBody String refreshToken){
-    if(jwtUtils.validateJwtToken(refreshToken)==false) return new ResponseEntity<>(new MessageResponse("refreshToken not valid"),HttpStatus.BAD_REQUEST);
-    return new ResponseEntity<>(new JwtRefreshResponse("fezfzefzefe"),HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenDto refreshToken){
+    if(jwtUtils.validateJwtToken(refreshToken.getRefreshToken())==false)
+          return new ResponseEntity<>(new MessageResponse("refreshToken not valid"),HttpStatus.BAD_REQUEST);
+
+
+    UserDetailsImpl userPrincipal = (UserDetailsImpl) userDetailService.loadUserByUsername(jwtUtils.getUserNameFromJwtToken(refreshToken.getRefreshToken()));
+    String token = Jwts.builder()
+            .setSubject((userPrincipal.getUsername()))
+            .claim("roles",userPrincipal.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList()))
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .compact();
+
+
+    return new ResponseEntity<>(new JwtRefreshResponse(token),HttpStatus.OK);
   }
 }

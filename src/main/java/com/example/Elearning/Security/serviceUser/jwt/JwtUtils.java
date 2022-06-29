@@ -35,7 +35,7 @@ public class JwtUtils {
 
     return Jwts.builder()
         .setSubject((userPrincipal.getUsername()))
-            .claim("roles",userPrincipal.getAuthorities().stream()
+        .claim("roles",userPrincipal.getAuthorities().stream()
                     .map(item -> item.getAuthority())
                     .collect(Collectors.toList()))
         .setIssuedAt(new Date())
@@ -46,13 +46,12 @@ public class JwtUtils {
   public String generateRefreshJwtToken(Authentication authentication) {
 
     UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-
     return Jwts.builder()
-            .setSubject((userPrincipal.getUsername()))
+            .setId(userPrincipal.getId().toString())
+            .setSubject(userPrincipal.getUsername())
             .setIssuedAt(new Date())
             .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs*10))
-            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .signWith(SignatureAlgorithm.HS256, jwtSecret)
             .compact();
   }
 
