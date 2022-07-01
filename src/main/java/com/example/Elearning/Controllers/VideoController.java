@@ -4,8 +4,6 @@ package com.example.Elearning.Controllers;
 
 import com.example.Elearning.DTOs.Response.MessageResponse;
 import com.example.Elearning.DTOs.Views.View;
-import com.example.Elearning.Models.PagesModels.Page;
-import com.example.Elearning.Models.UserModel.User;
 import com.example.Elearning.Models.VideosModels.Video;
 import com.example.Elearning.Services.PagesServices.PageService;
 import com.example.Elearning.Services.Userservices.UserService;
@@ -13,16 +11,12 @@ import com.example.Elearning.Services.VideoServices.VideoService;
 import com.example.Elearning.Storage.StorageService;
 import com.example.Elearning.Utils.TokenUtils;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/video")
@@ -51,7 +45,7 @@ public class VideoController {
                 pageService.findById(page_id),
                 userService.findById(tokenUtils.ExtractId())
         );
-        video.setVideoUrl(storageService.store(file));
+        video.setVideoUrl(storageService.store(file,"video" ));
 
         return  new ResponseEntity<>(videoService.Save(video),HttpStatus.OK);
 

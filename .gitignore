@@ -31,4 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-upload-dir/
+upload-dir/note/*
+upload-dir/video/*
+

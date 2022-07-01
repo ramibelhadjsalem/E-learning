@@ -39,10 +39,10 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public String store(MultipartFile file) {
+    public String store(MultipartFile file,String fileType) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         filename = filename.toLowerCase().replaceAll(" ", "-");
-        filename = String.valueOf(Calendar.getInstance().getTimeInMillis())+filename;
+        filename = String.valueOf(fileType+"/"+Calendar.getInstance().getTimeInMillis())+filename;
 
         try {
             if(file.isEmpty()){

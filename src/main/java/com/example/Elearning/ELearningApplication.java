@@ -4,14 +4,15 @@ import com.example.Elearning.Models.UserModel.ERole;
 import com.example.Elearning.Models.UserModel.Role;
 import com.example.Elearning.Repositorys.RoleRpository;
 import com.example.Elearning.Storage.StorageService;
-import com.example.Elearning.Storage.exception.StorageException;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
+@EnableAsync
 public class ELearningApplication {
 	@Bean
 	public ModelMapper modelMapper(){

@@ -1,11 +1,8 @@
 package com.example.Elearning.Controllers;
 
-import com.example.Elearning.DTOs.Request.NoteDto;
 import com.example.Elearning.DTOs.Response.MessageResponse;
 import com.example.Elearning.DTOs.Views.View;
 import com.example.Elearning.Models.NoteModels.Note;
-import com.example.Elearning.Models.PagesModels.Page;
-import com.example.Elearning.Models.UserModel.User;
 import com.example.Elearning.Services.NotesServices.NoteService;
 import com.example.Elearning.Services.PagesServices.PageService;
 import com.example.Elearning.Services.Userservices.UserService;
@@ -16,12 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import java.io.File;
 import java.util.List;
 
 @RestController
@@ -65,7 +59,7 @@ public class NoteController {
 
         Note note =new Note(null,myNote,null,pageService.findById(page_id), tokenUtils.ExtractId());
         if(!file.isEmpty()){
-            note.setVocalUri(storageService.store(file));
+            note.setVocalUri(storageService.store(file,"note" ));
         }
         return new ResponseEntity<>( noteService.Save(note), HttpStatus.OK);
     }

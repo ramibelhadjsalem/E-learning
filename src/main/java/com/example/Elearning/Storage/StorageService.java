@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public interface StorageService {
     void init();
 
-    String store(MultipartFile file);
+    String store(MultipartFile file,String fileType);
 
     Stream<Path> loadAll();
 
