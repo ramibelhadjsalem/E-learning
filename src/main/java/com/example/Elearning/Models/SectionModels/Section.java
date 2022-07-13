@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.*;
 import javax.validation.Valid;
 
-
 @Entity
 @Table(name = "sections",
         uniqueConstraints = {

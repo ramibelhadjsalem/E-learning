@@ -23,7 +23,7 @@ public class User {
     private Long id;
     @JsonView(View.base.class)
     private String username ;
-    private String email ;
+    private String email ;//todo: none
     private String password ;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();

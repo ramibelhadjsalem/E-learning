@@ -1,8 +1,11 @@
 package com.example.Elearning.Models.LevelModel;
 
+import com.example.Elearning.DTOs.Views.View;
+import com.example.Elearning.Models.SectionModels.Section;
 import com.example.Elearning.Models.Subjects.Subject;
 import com.example.Elearning.Models.UserModel.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -18,19 +21,17 @@ public class Level {
     @OneToMany(fetch = FetchType.EAGER ,cascade=CascadeType.REMOVE )
     private Set<Subject> subjects = new HashSet<>();
 
-    public Level(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @JsonView(View.base.class)
+    @ManyToMany
+    private Set<Section> sections = new HashSet<>();
 
     public Level() {
     }
-    public Set<Subject> getSubjects() {
-        return subjects;
-    }
 
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
+    public Level(Long id, String name) {
+        this.id = id;
+        this.name = name;
+
     }
 
     public Long getId() {
@@ -47,5 +48,21 @@ public class Level {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public Set<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(Set<Section> sections) {
+        this.sections = sections;
     }
 }
