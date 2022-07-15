@@ -30,12 +30,8 @@ public class UserService {
             throw new NotFoundException("user with id :"+id_user+" not found");
         }
     }
-
-    public  boolean exitsByEmailOrPhoneNumber(String email,String phoneNumber){
-        return userRepository.existsByEmailOrPhoneNumber(email,phoneNumber);
-    }
-    public  boolean existsByPhoneNumber(String phoneNumber){
-        return userRepository.existsByPhoneNumber(phoneNumber);
+    public  boolean existByEamilorPhoneNumber(String phoneNumber,String eamil){
+        return userRepository.existsByUsernameOrEmail(phoneNumber,eamil);
     }
 
 }
