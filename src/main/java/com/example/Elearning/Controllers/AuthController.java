@@ -8,7 +8,6 @@ import com.example.Elearning.DTOs.Request.SignUpProf;
 import com.example.Elearning.DTOs.Response.JwtRefreshResponse;
 import com.example.Elearning.DTOs.Response.JwtResponse;
 import com.example.Elearning.DTOs.Response.MessageResponse;
-import com.example.Elearning.Models.LevelModel.Level;
 import com.example.Elearning.Models.UserModel.ERole;
 import com.example.Elearning.Models.UserModel.Role;
 import com.example.Elearning.Models.UserModel.User;
@@ -34,7 +33,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,8 +95,8 @@ public class AuthController {
     User user = mapper.map(signUpDto ,User.class);
     user.setPassword(encoder.encode(signUpDto.getPassword()));
 
-    user.setLevel(levelService.getByid(signUpDto.getIdLevel()));
-    user.setSection(sectionService.findById(signUpDto.getIdSection()));
+    user.setLevel(levelService.getByid(signUpDto.getIdlevel()));
+    user.setSection(sectionService.findById(signUpDto.getIdsection()));
 
 
     Role userRole = roleService.findByName(ERole.ROLE_USER)
@@ -106,28 +104,10 @@ public class AuthController {
     user.getRoles().add(userRole);
 
     userService.saveUser(user);
-    userService.saveUser(user);
-    return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.CREATED);
+
+    return new ResponseEntity<>(new MessageResponse("registred succfully"), HttpStatus.CREATED);
   }
 
-/*  @PostMapping("/signup/admin")
-
-  public ResponseEntity addAdmin(@Valid @RequestBody SignUpDto signUpDto){
-    if (userService.existsByUsername(signUpDto.getUsername())) {
-      return ResponseEntity
-              .badRequest()
-              .body(new MessageResponse("Error: Username is already taken!"));
-    }
-    User user = new User(signUpDto.getUsername(),
-            signUpDto.getEmail(),
-            encoder.encode(signUpDto.getPassword()));
-
-    Role userRole =roleService.findByName(ERole.ROLE_ADMIN)
-            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-    user.getRoles().add(userRole);
-    userService.saveUser(user);
-    return new ResponseEntity<>(new MessageResponse("Admin registered successfully!"), HttpStatus.CREATED);
-  }*/
 
   @PostMapping("/signup/prof")
 

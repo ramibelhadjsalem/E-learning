@@ -1,18 +1,12 @@
 package com.example.Elearning.DTOs.Request;
 
-import com.example.Elearning.Models.LevelModel.Level;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpDto {
@@ -27,13 +21,56 @@ public class SignUpDto {
     @NotBlank
     private String password ;
     @NotNull
-    private  Long idLevel ;
+    private  Long idlevel;
 
     @NotNull
-    private  Long idSection ;
+    private  Long idsection;
 
+    public String getFirstname() {
+        return firstname;
+    }
 
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
+    public String getLastname() {
+        return lastname;
+    }
 
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Long getIdlevel() {
+        return idlevel;
+    }
+
+    public void setIdlevel(Long idlevel) {
+        this.idlevel = idlevel;
+    }
+
+    public Long getIdsection() {
+        return idsection;
+    }
+
+    public void setIdsection(Long idsection) {
+        this.idsection = idsection;
+    }
 }
