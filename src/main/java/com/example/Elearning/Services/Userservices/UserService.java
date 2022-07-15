@@ -30,5 +30,8 @@ public class UserService {
             throw new NotFoundException("user with id :"+id_user+" not found");
         }
     }
+    public  boolean existByEamilorPhoneNumber(String phoneNumber,String eamil){
+        return userRepository.existsByUsernameOrEmail(phoneNumber,eamil);
+    }
 
 }
