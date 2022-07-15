@@ -1,8 +1,6 @@
 package com.example.Elearning.Controllers;
 
-import com.example.Elearning.DTOs.Request.RefreshTokenDto;
-import com.example.Elearning.DTOs.Request.SignUpDto;
-import com.example.Elearning.DTOs.Request.LoginForm;
+import com.example.Elearning.DTOs.Request.*;
 
 import com.example.Elearning.DTOs.Response.JwtRefreshResponse;
 import com.example.Elearning.DTOs.Response.JwtResponse;
@@ -15,10 +13,12 @@ import com.example.Elearning.Security.serviceUser.UserDetailServiceImpl;
 import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import com.example.Elearning.Security.serviceUser.jwt.JwtUtils;
 import com.example.Elearning.Services.LevelServices.LevelService;
+import com.example.Elearning.Services.SubjectServices.SectionService;
 import com.example.Elearning.Services.Userservices.RoleService;
 import com.example.Elearning.Services.Userservices.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,12 +40,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+  @Autowired private ModelMapper mapper ;
   @Autowired
   UserService userService;
   @Autowired
   RoleService roleService;
-  @Autowired
-  LevelService levelService;
+  @Autowired private LevelService levelService;
+  @Autowired private SectionService sectionServic;
   @Autowired
   AuthenticationManager authenticationManager;
   @Autowired
@@ -82,28 +83,27 @@ public class AuthController {
                          roles));
   }
   @PostMapping("/signup/user")
-  public ResponseEntity addUser(@Valid @RequestBody SignUpDto signUpDto){
-    if (userService.existsByUsername(signUpDto.getUsername())) {
+  public ResponseEntity addUser(@Valid @RequestBody SignupUser signUpDto){
+    if (userService.existsByPhoneNumber(signUpDto.getPhoneNumber())) {
       return ResponseEntity
               .badRequest()
-              .body(new MessageResponse("Error: Username is already taken!"));
+              .body(new MessageResponse("Error: phoneNumber is already taken!"));
     }
-    User user = new User(signUpDto.getUsername(),
-            signUpDto.getEmail(),
-            encoder.encode(signUpDto.getPassword()));
+    User user = mapper.map(signUpDto ,User.class);
+    user.setPassword(encoder.encode((signUpDto.getPassword())));
+    user.setUsername(signUpDto.getPhoneNumber());
+
+    user.setLevel(levelService.getByid(signUpDto.getIdlevel()));
+    user.setSection(sectionServic.findById(signUpDto.getIdsection()));
 
     Role userRole = roleService.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
     user.getRoles().add(userRole);
-    if(signUpDto.getLevel()!=null){
-        Level level=levelService.findbyName(signUpDto.getLevel());
-        user.setLevel(level);
-    }
     userService.saveUser(user);
     return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.CREATED);
   }
 
-  @PostMapping("/signup/admin")
+  /*@PostMapping("/signup/admin")
 
   public ResponseEntity addAdmin(@Valid @RequestBody SignUpDto signUpDto){
     if (userService.existsByUsername(signUpDto.getUsername())) {
@@ -120,24 +120,30 @@ public class AuthController {
     user.getRoles().add(userRole);
     userService.saveUser(user);
     return new ResponseEntity<>(new MessageResponse("Admin registered successfully!"), HttpStatus.CREATED);
-  }
+  }*/
 
   @PostMapping("/signup/prof")
 
-  public ResponseEntity addProf(@Valid @RequestBody SignUpDto signUpDto){
-    if (userService.existsByUsername(signUpDto.getUsername())) {
+  public ResponseEntity addProf(@Valid @RequestBody SignUpProf signUpDto){
+
+    if (userService.exitsByEmailOrPhoneNumber(signUpDto.getEmail(),signUpDto.getPhoneNumber())) {
       return ResponseEntity
               .badRequest()
-              .body(new MessageResponse("Error: Username is already taken!"));
+              .body(new MessageResponse("Error: email or phoneNumber is already taken!"));
     }
-    User user = new User(signUpDto.getUsername(),
-            signUpDto.getEmail(),
-            encoder.encode(signUpDto.getPassword()));
+    User user = mapper.map(signUpDto ,User.class);
+    user.setPassword(encoder.encode((signUpDto.getPassword())));
+    user.setUsername(signUpDto.getPhoneNumber());
+
+    user.setLevel(levelService.getByid(signUpDto.getIdlevel()));
 
     Role userRole = roleService.findByName(ERole.ROLE_PROF)
             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
     user.getRoles().add(userRole);
+
     userService.saveUser(user);
+
+
     return new ResponseEntity<>(new MessageResponse("profisseur registered successfully!"), HttpStatus.CREATED);
   }
   @PostMapping("/refreshtoken") // Todo:RefreshToken
