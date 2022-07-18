@@ -1,16 +1,15 @@
 package com.example.Elearning.Controllers;
 
-import com.example.Elearning.DTOs.Request.RefreshTokenDto;
-import com.example.Elearning.DTOs.Request.SignUpDto;
-import com.example.Elearning.DTOs.Request.LoginForm;
+import com.example.Elearning.DTOs.Request.*;
 
-import com.example.Elearning.DTOs.Request.SignUpProf;
 import com.example.Elearning.DTOs.Response.JwtRefreshResponse;
 import com.example.Elearning.DTOs.Response.JwtResponse;
 import com.example.Elearning.DTOs.Response.MessageResponse;
 import com.example.Elearning.Models.UserModel.ERole;
 import com.example.Elearning.Models.UserModel.Role;
 import com.example.Elearning.Models.UserModel.User;
+import com.example.Elearning.Security.Twilio.SmsRequest;
+import com.example.Elearning.Security.Twilio.SmsService;
 import com.example.Elearning.Security.serviceUser.UserDetailServiceImpl;
 import com.example.Elearning.Security.serviceUser.UserDetailsImpl;
 import com.example.Elearning.Security.serviceUser.jwt.JwtUtils;
@@ -32,9 +31,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+  @Autowired private SmsService smsService;
   @Autowired private ModelMapper mapper;
   @Autowired RoleService roleService;
   @Autowired LevelService levelService;
@@ -64,7 +66,9 @@ public class AuthController {
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginForm) {
-
+    if(userService.confirmed(loginForm.getUsername())==false){
+      return new ResponseEntity<>("Account not aprooved",HttpStatus.NOT_ACCEPTABLE);
+    }
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
 
@@ -103,9 +107,12 @@ public class AuthController {
             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
     user.getRoles().add(userRole);
 
+    user.setSmsCode( smsService.ConfirmAccout(signUpDto.getUsername()));
+
+  /*  smsService.generateNewPassword(signUpDto.getUsername());*/
     userService.saveUser(user);
 
-    return new ResponseEntity<>(new MessageResponse("registred succfully"), HttpStatus.CREATED);
+    return new ResponseEntity<>(new MessageResponse("le code de confirmation a ete envoyee a :"+signUpDto.getUsername()), HttpStatus.CREATED);
   }
 
 
@@ -126,7 +133,7 @@ public class AuthController {
       Role userRole =roleService.findByName(ERole.ROLE_PROF)
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
       user.getRoles().add(userRole);
-
+      user.setSmsCode( smsService.ConfirmAccout(signUpDto.getUsername()));
       userService.saveUser(user);
     return new ResponseEntity<>(new MessageResponse("Admin registered successfully!"), HttpStatus.CREATED);
   }
@@ -150,4 +157,34 @@ public class AuthController {
 
     return new ResponseEntity<>(new JwtRefreshResponse(token),HttpStatus.OK);
   }
+
+
+  @GetMapping("/confirmsms")
+  public ResponseEntity confirmAccountWithSms(@Valid @RequestBody ConfirmSms confirmSms){
+    Optional<User> user = userService.findByUsername(confirmSms.getPhoneNumber());
+
+    if(user ==null) return new ResponseEntity("Not valid PhoneNumber",HttpStatus.NOT_FOUND);
+    User userFound = user.get();
+    if(user.get().getSmsCode().equals(confirmSms.getCode())==true ){
+      userFound.setConfirmed(true);
+      userService.saveUser(userFound);
+      return new ResponseEntity("Confirmed",HttpStatus.OK);
+    }
+
+    return new ResponseEntity("Not valid code",HttpStatus.NOT_ACCEPTABLE);
+  }
+
+  @PostMapping("/confirmsms")
+  public ResponseEntity ResetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto){
+    Optional<User> user = userService.findByUsername(resetPasswordDto.getPhoneNumber());
+
+    if(user ==null) return new ResponseEntity("Not valid PhoneNumber",HttpStatus.NOT_FOUND);
+
+
+      smsService.generateNewPassword(resetPasswordDto.getPhoneNumber());
+      return new ResponseEntity<>("password has changed check your sms box",HttpStatus.OK);
+
+
+  }
+
 }

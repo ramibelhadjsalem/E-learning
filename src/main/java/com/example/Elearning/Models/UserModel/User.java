@@ -6,7 +6,6 @@ import com.example.Elearning.Models.SectionModels.Section;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -38,6 +37,7 @@ public class User {
 
     private  boolean activated ;
     private  boolean confirmed ;
+    private String  SmsCode ;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -59,7 +59,7 @@ public class User {
 
     }
 
-    public User(Long id, String username, String email, String password, String firstname, String lastname, boolean activated, boolean confirmed, Set<Role> roles, Level level, Section section) {
+    public User(Long id, String username, String email, String password, String firstname, String lastname, boolean activated, boolean confirmed, String smsCode, Set<Role> roles, Level level, Section section) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -68,6 +68,7 @@ public class User {
         this.lastname = lastname;
         this.activated = activated;
         this.confirmed = confirmed;
+        SmsCode = smsCode;
         this.roles = roles;
         this.level = level;
         this.section = section;
@@ -159,5 +160,13 @@ public class User {
 
     public void setSection(Section section) {
         this.section = section;
+    }
+
+    public String getSmsCode() {
+        return SmsCode;
+    }
+
+    public void setSmsCode(String smsCode) {
+        SmsCode = smsCode;
     }
 }

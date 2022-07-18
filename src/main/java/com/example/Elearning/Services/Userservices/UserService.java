@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -34,4 +35,12 @@ public class UserService {
         return userRepository.existsByUsernameOrEmail(phoneNumber,eamil);
     }
 
+    public Optional<User> findByUsername(String phoneNumber) {
+
+        return userRepository.findByUsername(phoneNumber);
+
+    }
+    public boolean confirmed(String phoneNumber){
+        return userRepository.existsByUsernameAndConfirmed(phoneNumber,true);
+    }
 }
