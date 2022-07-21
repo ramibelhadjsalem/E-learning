@@ -159,30 +159,31 @@ public class AuthController {
   }
 
 
-  @GetMapping("/confirmsms")
+  @PostMapping("/confirmsms")
   public ResponseEntity confirmAccountWithSms(@Valid @RequestBody ConfirmSms confirmSms){
-    Optional<User> user = userService.findByUsername(confirmSms.getPhoneNumber());
+    User user = userService.findByUsername(confirmSms.getPhoneNumber()).get();
 
     if(user ==null) return new ResponseEntity("Not valid PhoneNumber",HttpStatus.NOT_FOUND);
-    User userFound = user.get();
-    if(user.get().getSmsCode().equals(confirmSms.getCode())==true ){
+    User userFound = user;
+    if(user.getSmsCode().equals(confirmSms.getCode())==true ){
       userFound.setConfirmed(true);
       userService.saveUser(userFound);
-      return new ResponseEntity("Confirmed",HttpStatus.OK);
+      return new ResponseEntity(new MessageResponse("succeded"),HttpStatus.OK);
     }
 
     return new ResponseEntity("Not valid code",HttpStatus.NOT_ACCEPTABLE);
   }
 
-  @PostMapping("/confirmsms")
+  @PostMapping("/resetpassword")
   public ResponseEntity ResetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto){
     Optional<User> user = userService.findByUsername(resetPasswordDto.getPhoneNumber());
 
     if(user ==null) return new ResponseEntity("Not valid PhoneNumber",HttpStatus.NOT_FOUND);
+    User userFound = user.get();
+    userFound.setPassword(encoder.encode(smsService.generateNewPassword(resetPasswordDto.getPhoneNumber())));
+    userService.saveUser(userFound);
 
-
-      smsService.generateNewPassword(resetPasswordDto.getPhoneNumber());
-      return new ResponseEntity<>("password has changed check your sms box",HttpStatus.OK);
+      return  ResponseEntity.ok().body(new MessageResponse("password changed "));
 
 
   }
