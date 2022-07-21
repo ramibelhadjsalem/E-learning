@@ -85,7 +85,10 @@ public class AuthController {
                          refreshJwt,
                          userDetails.getId(), 
                          userDetails.getUsername(), 
-                         userDetails.getEmail(), 
+                         userDetails.getEmail(),
+                         userDetails.getFirstName(),
+                         userDetails.getLastName(),
+
                          roles));
   }
   @PostMapping("/signup/user")
