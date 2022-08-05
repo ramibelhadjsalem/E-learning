@@ -50,6 +50,22 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"" + noteName + "\"")
                 .body(bdata);
     }
+    @GetMapping("img/{imgname}")
+    public  ResponseEntity<?> getImg(@PathVariable String imgname){
+        byte[] bdata;
+        Resource file = storageService.loadAsResource("img/"+imgname);
+        try {
+
+            InputStream inputStream = file.getInputStream();
+            bdata = FileCopyUtils.copyToByteArray(inputStream);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"" + imgname + "\"")
+                .body(bdata);
+    }
 
 
 }

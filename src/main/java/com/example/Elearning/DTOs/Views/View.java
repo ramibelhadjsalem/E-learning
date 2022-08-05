@@ -13,4 +13,7 @@ public interface View {
 
     public class page extends base {
     }
+    public  class  extrainfo extends base{
+
+    }
 }

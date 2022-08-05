@@ -44,19 +44,9 @@ public class ELearningApplication {
 			}
 			if(!userRepository.existsByUsernameOrEmail("Admin","Admin")){
 					User user = new User(
-							null,
 							"Admin",
 							"Admin",
-							encoder.encode("password"),
-							"",
-							"",
-							true,
-							true,
-							"",
-							new HashSet<>(),
-							null,
-							null
-
+							encoder.encode("password")
 					);
 				Role userRole = roleService.findByName(ERole.ROLE_ADMIN)
 						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
