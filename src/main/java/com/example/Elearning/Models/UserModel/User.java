@@ -68,7 +68,7 @@ public class User {
     @Column(length = 3000)
     private  String adresse ;
     @JsonView(View.extrainfo.class)
-    @Column(length = 3000)
+    
     private  String photoUrl ;
 
     @JsonView(View.extrainfo.class)
@@ -116,7 +116,15 @@ public class User {
 
     public User() {
     }
-
+    
+    public User(String username, String email, String password,boolean activated,boolean comfirmed) {
+    	this.username = username;
+        this.email = email;
+        this.password = password;
+        this.confirmed = comfirmed;
+        this.activated = activated;
+    	
+    }
     public User(Long id, String username, String email, String password, String firstname, String lastname, String bio, Date dob, String jobTitle, String lang, boolean joinMail, Boolean[] traininglevel, String mettingType, String gender, String adresse, String photoUrl, String coverUrl, boolean activated, boolean confirmed, String smsCode, Set<Role> roles, Level level, Section section, Set<Education> educations, Set<Experience> experiences) {
         this.id = id;
         this.username = username;

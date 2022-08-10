@@ -32,12 +32,7 @@ public class FileSystemStorageService implements StorageService{
             if(Files.notExists(Paths.get(rootLocation.toString()))){
                 Files.createDirectory(Paths.get(String.valueOf(rootLocation)));
             }
-            if(Files.notExists(Paths.get(rootLocation.toString()+"/img"))){
-                Files.createDirectory(Paths.get(String.valueOf(rootLocation)+"/img"));
-            }
-            if(Files.notExists(Paths.get(rootLocation.toString()+"/video"))){
-                Files.createDirectory(Paths.get("video"));
-            }
+           
 
         }catch (Exception ex){
             throw new SecurityException("could not init diractory",ex);

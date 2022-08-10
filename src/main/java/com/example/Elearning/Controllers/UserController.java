@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.validation.constraints.NotNull;
 
 @RestController
@@ -59,7 +61,15 @@ public class UserController {
             if(infoUpdate.getMettingType()!=null) user.setMettingType(infoUpdate.getMettingType());
 
             if(infoUpdate.getGender()!=null) user.setGender(infoUpdate.getGender());
-            if(infoUpdate.getAdresse()!=null) user.setAdresse(user.getAdresse());
+            if(infoUpdate.getAdresse()!=null) user.setAdresse(infoUpdate.getAdresse());
+            
+            if(infoUpdate.getCoverUrl()!=null) {
+            	if(user.getCoverUrl()!=infoUpdate.getCoverUrl()) user.setCoverUrl(infoUpdate.getCoverUrl());
+            	
+            }
+            if(infoUpdate.getPhotoUrl()!=null) {
+            	if( user.getPhotoUrl()!=infoUpdate.getPhotoUrl()) user.setPhotoUrl(infoUpdate.getPhotoUrl());
+            }
 
 
             if(infoUpdate.getPassword()!=null ) user.setPassword(encoder.encode(infoUpdate.getPassword()));

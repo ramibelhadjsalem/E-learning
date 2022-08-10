@@ -46,7 +46,9 @@ public class ELearningApplication {
 					User user = new User(
 							"Admin",
 							"Admin",
-							encoder.encode("password")
+							encoder.encode("password"),
+							true,
+							true
 					);
 				Role userRole = roleService.findByName(ERole.ROLE_ADMIN)
 						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
