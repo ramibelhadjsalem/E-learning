@@ -41,6 +41,7 @@ public class InfoUpdate {
 
     private String coverUrl ;
 
+
 	public InfoUpdate(String username, String email, String password, String firstname, String lastname, String bio,
 			String jobTitle, Date dob, String lang, boolean joinMail, Boolean[] traininglevel, String mettingType,
 			String gender, String adresse, String photoUrl, String coverUrl) {
